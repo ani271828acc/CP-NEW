@@ -7,53 +7,52 @@ class segtree{
 /*
     ref: https://youtu.be/2FShdqn-Oz8
     ref: https://cp-algorithms.com/data_structures/segment_tree.html
+
+    constructor examples:
+    segtree<int> st(ar); 
+    segtree<int> st(ar,-inf,[](int a,int b){
+        return max(a,b);
+    });
+    segtree<pair<int,int>> st(ar,pair<int,int>(0,0),[](pair<int,int>a,pair<int,int>b){
+        return {a.first+b.first,a.second+b.second};
+    });
+
+    methods:
+    get(l,r): get value of f on range [l,r], 0 indexed
+    set(i,v): change value of idx i to v, 0 indexed
 */
 private:
     int n; T basecase;
     T(* f)(T a,T b);
     vector<T> tree,ar;
     T build(int v,int tl,int tr) {
-        if(tl==tr) 
-            return tree[v]=ar[tl]; 
+        if(tl==tr) return tree[v]=ar[tl]; 
         int tm=(tl+tr)/2;
         return tree[v]=f(build(2*v,tl,tm),build(2*v+1,tm+1,tr));
     }
     T _get(int v,int tl,int tr,int ql,int qr) {
-        if(tl>qr||tr<ql) 
-            return basecase;
-        if(tl>=ql&&tr<=qr) 
-            return tree[v];
+        if(tl>qr||tr<ql) return basecase;
+        if(tl>=ql&&tr<=qr) return tree[v];
         int tm=(tl+tr)/2;
         return f(_get(2*v,tl,tm,ql,qr),_get(2*v+1,tm+1,tr,ql,qr));
     }   
     T _set(int v,int tl,int tr,int idx,T val) {
-        if(tl>idx||tr<idx) 
-            return tree[v];
-        if(tl==tr) 
-            return tree[v]=val;
+        if(tl>idx||tr<idx) return tree[v];
+        if(tl==tr) return tree[v]=val;
         int tm=(tl+tr)/2;
         return tree[v]=f(_set(2*v,tl,tm,idx,val),_set(2*v+1,tm+1,tr,idx,val));
     }
 public:
-    // constructor:
-    // examples: 
-    // segtree<int> st(ar);
-    // segtree<int> st(ar,-inf,[](int a,int b){return max(a,b);})
     segtree(vector<T>&_,T _basecase=0,T(*_f)(T a,T b)=[](T a,T b){
         return a+b;
     }) {
-        // f should be an associative function
-        // basecase and f are optional parameters
-        // defaults to 0 and addition
         f=_f; ar=_; basecase=_basecase;
         n=ar.size(); tree=vector<T>(4*n,basecase);
         build(1,0,n-1);
     }
-    // call st.get(left,right), 0 indexed
     T get(int ql,int qr) {
         return _get(1,0,n-1,ql,qr);
     }
-    // call st.set(idx, newVal), 0 indexed
     void set(int idx,T val) {
         _set(1,0,n-1,idx,val);
     }
