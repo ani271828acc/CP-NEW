@@ -27,28 +27,24 @@ private:
 		}
 		build(2*v,tl,(tl+tr)/2);
 		build(2*v+1,(tl+tr)/2+1,tr);
-		tree[v]=vector<T>(tree[2*v].size()+tree[2*v+1].size());
-		int ii=0,jj=0,kk=0;
+		int ii=0,jj=0,kk=0,p=tree[2*v].size(),q=tree[2*v+1].size();
+		tree[v]=vector<T>(p+q);
 		while(kk<tree[v].size()) {
-			if(ii==tree[2*v].size()) {
+			if(ii==p)
 				tree[v][kk++]=tree[2*v+1][jj++];
-			} else if(jj==tree[2*v+1].size()) {
+			else if(jj==q)
 				tree[v][kk++]=tree[2*v][ii++];
-			} else if(tree[2*v][ii]<=tree[2*v+1][jj]) {
+			else if(tree[2*v][ii]<=tree[2*v+1][jj])
 				tree[v][kk++]=tree[2*v][ii++];
-			} else {
-				tree[v][kk++]=tree[2*v+1][jj++];
-			}
+			else tree[v][kk++]=tree[2*v+1][jj++];
 		}
-		return;
 	}
 
 	int _get(int v,int tl,int tr,int ql,int qr,T K) {
 		if(tl>qr||tr<ql) 
 			return 0;
-		if(tl>=ql&&tr<=qr) {
+		if(tl>=ql&&tr<=qr) 
 			return lower_bound(tree[v].begin(),tree[v].end(),K)-tree[v].begin();
-		}
 		return _get(2*v,tl,(tl+tr)/2,ql,qr,K)+_get(2*v+1,(tl+tr)/2+1,tr,ql,qr,K);
 	}
 public:
