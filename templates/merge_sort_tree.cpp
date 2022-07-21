@@ -2,21 +2,24 @@
 using namespace std;
 using namespace std::chrono;
 
-// todo: data structure with support for
+// merge sort tree: data structure with support for
 // queries of the type: find number of elements
 // in the range [L, R] smaller than K
-// [DONE]
 
 // todo:
 // implement support for point updates
 // using std::ordered_set instead of sorted vectors?
 
+// todo:
+// generalise: cmp function
+
 // segtree like structure: 
 // for ranges, store a sorted vector of elements
 // space: logN*N
+// built using merge sort process
 
 template<typename T>
-class rangeMinctQ{
+class merge_sort_tree{
 private:
 	int n; 
 	vector<vector<T>> tree;
@@ -48,7 +51,7 @@ private:
 		return _get(2*v,tl,(tl+tr)/2,ql,qr,K)+_get(2*v+1,(tl+tr)/2+1,tr,ql,qr,K);
 	}
 public:
-	rangeMinctQ(vector<T> _ar) {
+	merge_sort_tree(vector<T> _ar) {
 		ar=_ar; n=ar.size();
 		tree=vector<vector<T>>(4*n);
 		build(1,0,n-1);
@@ -84,7 +87,7 @@ public:
 			ar[i]=rand();
 		}
 		bruteforce<T> bt(ar);
-		rangeMinctQ<T> st(ar);
+		merge_sort_tree<T> st(ar);
 		int q=100;
 		while(q--) {
 			int l=rand()%n;
@@ -102,7 +105,7 @@ public:
 			ar[i]=rand();
 		}
 		high_resolution_clock::time_point t1 = high_resolution_clock::now();
-		rangeMinctQ<T> st(ar);
+		merge_sort_tree<T> st(ar);
 		while(q--) {
 			int l=rand()%n;
 			int r=l+rand()%(n-l);
